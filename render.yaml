@@ -35,7 +35,7 @@ services:
       # ── Demo mode ──────────────────────────────────────────────────────────
       # Set to false and add DATABASE_URL when you want a real database.
       - key: DEMO_MODE
-        value: true
+        value: "true"
 
       # ── Database (uncomment when using a real PostgreSQL database) ─────────
       # - key: DATABASE_URL
