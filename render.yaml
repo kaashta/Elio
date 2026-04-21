@@ -18,7 +18,7 @@ services:
     plan: free
     # Build: install & build client, then install server (postinstall runs prisma generate)
     buildCommand: >-
-      npm install --prefix client &&
+      npm install --prefix client --include=dev &&
       npm run build --prefix client &&
       npm install --prefix server
     # Run from repo root; __dirname in index.js still resolves correctly
