@@ -16,10 +16,7 @@ services:
     name: elio
     env: node
     plan: free
-    # Render uses Node 18 by default; pin to a known working version
-    nodeVersion: "20"
     # Build: install & build client, then install server (postinstall runs prisma generate)
-    # Using --include=dev is not needed because prisma is now in dependencies
     buildCommand: >-
       npm install --prefix client &&
       npm run build --prefix client &&
@@ -27,6 +24,8 @@ services:
     # Run from repo root; __dirname in index.js still resolves correctly
     startCommand: node server/index.js
     envVars:
+      - key: NODE_VERSION
+        value: "20"
       - key: NODE_ENV
         value: production
       - key: JWT_SECRET
