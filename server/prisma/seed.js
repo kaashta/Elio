@@ -228,7 +228,7 @@ async function main() {
       duration: '20 min',
       order: 1,
       content: `<h2>Welcome to the beginning of something real.</h2><p>This module is about giving yourself permission to start fresh. Before we can plan where we're going, we spend a moment honouring where we've been.</p><h3>Your values</h3><p>Values are the things that matter most to you — honesty, family, creativity, independence. When your work and life align with your values, you feel more energised and more like yourself.</p><p>Take a moment to write down three values that feel most important to you right now.</p><h3>Your strengths</h3><p>You have more than you think. Strengths aren't just qualifications — they're qualities like resilience, empathy, organisation, creativity, and the ability to keep going when things are hard.</p>`,
-      videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+      videoUrl: null,
       quiz: [
         { question: 'What is a personal value?', options: ['A bank balance', 'Something that matters deeply to you', 'A job title', 'A qualification'], answer: 1 },
         { question: 'Strengths can include:', options: ['Only formal qualifications', 'Only physical skills', 'Qualities like resilience and empathy', 'Only work experience'], answer: 2 },
@@ -902,7 +902,7 @@ main()
       duration: '20 min',
       order: 1,
       content: `<h2>Welcome to the beginning of something real.</h2><p>This module is about giving yourself permission to start fresh. Before we can plan where we're going, we spend a moment honouring where we've been.</p><h3>Your values</h3><p>Values are the things that matter most to you — honesty, family, creativity, independence. When your work and life align with your values, you feel more energised and more like yourself.</p><p>Take a moment to write down three values that feel most important to you right now.</p><h3>Your strengths</h3><p>You have more than you think. Strengths aren't just qualifications — they're qualities like resilience, empathy, organisation, creativity, and the ability to keep going when things are hard.</p>`,
-      videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+      videoUrl: null,
       quiz: [
         { question: 'What is a personal value?', options: ['A bank balance', 'Something that matters deeply to you', 'A job title', 'A qualification'], answer: 1 },
         { question: 'Strengths can include:', options: ['Only formal qualifications', 'Only physical skills', 'Qualities like resilience and empathy', 'Only work experience'], answer: 2 },

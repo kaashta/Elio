@@ -28,7 +28,7 @@ export const paths = [
         description: 'Explore your values, strengths, and where you are today.',
         duration: '20 min',
         order: 1,
-        videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+        videoUrl: null,
         userProgress: [],
       },
       {
@@ -171,7 +171,7 @@ export const moduleDetail = {
     description: 'Explore your values, strengths, and where you are today.',
     duration: '20 min',
     order: 1,
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoUrl: null,
     content: `<h2>Welcome to the beginning of something real.</h2><p>This module is about giving yourself permission to start fresh. Before we can plan where we're going, we spend a moment honouring where we've been.</p><h3>Your values</h3><p>Values are the things that matter most to you — honesty, family, creativity, independence. When your work and life align with your values, you feel more energised and more like yourself.</p><p>Take a moment to write down three values that feel most important to you right now.</p><h3>Your strengths</h3><p>You have more than you think. Strengths aren't just qualifications — they're qualities like resilience, empathy, organisation, creativity, and the ability to keep going when things are hard.</p>`,
     quiz: [
       { question: 'What is a personal value?', options: ['A bank balance', 'Something that matters deeply to you', 'A job title', 'A qualification'], answer: 1 },
