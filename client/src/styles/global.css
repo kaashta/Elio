@@ -1,0 +1,118 @@
+/* Elio global styles — import Google Fonts, set CSS variables, base resets */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── CSS custom properties (design tokens) ──────────────────── */
+:root {
+  --cream:       #FAF6F0;
+  --sand:        #E8DCC8;
+  --terracotta:  #C4714A;
+  --rust:        #A0522D;
+  --sage:        #7A9E7E;
+  --warm-brown:  #5C3D2E;
+  --off-white:   #FFFDF9;
+  --muted-text:  #7A6A5A;
+}
+
+/* ── Base resets ─────────────────────────────────────────────── */
+@layer base {
+  html {
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    @apply bg-cream text-warm-brown font-body;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+
+  /* Override default focus ring to match the palette */
+  *:focus-visible {
+    outline: 2px solid var(--terracotta);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+/* ── Reusable component layer ────────────────────────────────── */
+@layer components {
+  /* Primary button */
+  .btn-primary {
+    @apply bg-terracotta text-off-white font-medium px-6 py-3 rounded-btn
+           shadow-sm transition-all duration-200
+           hover:bg-rust hover:shadow-card
+           active:scale-95;
+  }
+
+  /* Secondary / outline button */
+  .btn-secondary {
+    @apply border border-terracotta text-terracotta font-medium px-6 py-3 rounded-btn
+           transition-all duration-200
+           hover:bg-terracotta hover:text-off-white
+           active:scale-95;
+  }
+
+  /* Ghost button */
+  .btn-ghost {
+    @apply text-muted-text font-medium px-4 py-2 rounded-btn
+           transition-colors duration-200
+           hover:text-warm-brown hover:bg-sand;
+  }
+
+  /* Card container */
+  .card {
+    @apply bg-off-white rounded-card shadow-card p-6;
+  }
+
+  /* Form input */
+  .input {
+    @apply w-full border border-sand rounded-btn px-4 py-3
+           bg-off-white text-warm-brown placeholder-muted-text
+           focus:outline-none focus:border-terracotta focus:ring-1 focus:ring-terracotta
+           transition-colors duration-200;
+  }
+
+  /* Form label */
+  .label {
+    @apply block text-sm font-medium text-warm-brown mb-1;
+  }
+
+  /* Tab button */
+  .tab {
+    @apply px-4 py-2 rounded-btn font-medium text-sm transition-all duration-200
+           text-muted-text hover:text-warm-brown;
+  }
+
+  .tab-active {
+    @apply bg-terracotta text-off-white;
+  }
+
+  /* Pill / tag */
+  .pill {
+    @apply px-3 py-1 rounded-full text-sm border border-sand text-muted-text
+           cursor-pointer transition-all duration-150
+           hover:border-terracotta hover:text-terracotta;
+  }
+
+  .pill-active {
+    @apply bg-terracotta text-off-white border-terracotta;
+  }
+
+  /* Section heading */
+  .section-title {
+    @apply font-heading text-2xl font-semibold text-warm-brown;
+  }
+
+  /* Page container */
+  .page-container {
+    @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
+  }
+}

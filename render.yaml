@@ -1,0 +1,57 @@
+# Render Blueprint — deploys Elio as a single web service.
+# The Express server handles the API and also serves the built React frontend.
+#
+# To deploy:
+#   1. Push this repo to GitHub
+#   2. Go to render.com → New → Blueprint → connect the repo
+#   3. Render will pick up this file automatically
+#
+# DEMO MODE (no database needed):
+#   DEMO_MODE is set to true by default so the app works immediately.
+#   To use a real PostgreSQL database, uncomment the `databases` section below,
+#   add DATABASE_URL from the provisioned DB, and set DEMO_MODE to false.
+
+services:
+  - type: web
+    name: elio
+    env: node
+    plan: free
+    # Render uses Node 18 by default; pin to a known working version
+    nodeVersion: "20"
+    # Build: install & build client, then install server (postinstall runs prisma generate)
+    # Using --include=dev is not needed because prisma is now in dependencies
+    buildCommand: >-
+      npm install --prefix client &&
+      npm run build --prefix client &&
+      npm install --prefix server
+    # Run from repo root; __dirname in index.js still resolves correctly
+    startCommand: node server/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true   # Render auto-generates a secure random value
+
+      # ── Demo mode ──────────────────────────────────────────────────────────
+      # Set to false and add DATABASE_URL when you want a real database.
+      - key: DEMO_MODE
+        value: true
+
+      # ── Database (uncomment when using a real PostgreSQL database) ─────────
+      # - key: DATABASE_URL
+      #   fromDatabase:
+      #     name: elio-db
+      #     property: connectionString
+
+      # ── CORS / Socket.io origin ────────────────────────────────────────────
+      # Update this to your actual Render URL after first deploy.
+      # e.g. https://elio.onrender.com
+      - key: CLIENT_URL
+        value: https://elio.onrender.com
+
+# ── Database (uncomment to provision a free Render PostgreSQL instance) ────────
+# Once uncommented, also set DEMO_MODE to false and uncomment DATABASE_URL above.
+# databases:
+#   - name: elio-db
+#     databaseName: elio
+#     plan: free

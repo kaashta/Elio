@@ -1,0 +1,155 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Users ─────────────────────────────────────────────────────
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  photo        String?  // filename stored in /uploads
+  bio          String?
+  goals        String[] // array of goal strings
+  interests    String[] // array of interest tags
+  onboarded    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  // Relations
+  moduleProgress    UserModuleProgress[]
+  posts             Post[]
+  replies           Reply[]
+  likes             Like[]
+  mentorProfile     Mentor?
+  mentoringAsMentee MentoringSession[] @relation("Mentee")
+}
+
+// ── Learning ──────────────────────────────────────────────────
+model LearningPath {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  order       Int
+  modules     Module[]
+}
+
+model Module {
+  id          String       @id @default(cuid())
+  pathId      String
+  path        LearningPath @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  duration    String       // e.g. "20 min"
+  order       Int
+  content     String       // HTML or Markdown body text
+  videoUrl    String?      // embed URL placeholder
+  quiz        Json?        // array of {question, options[], answer}
+  userProgress UserModuleProgress[]
+}
+
+model UserModuleProgress {
+  userId      String
+  moduleId    String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  module      Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  completed   Boolean  @default(false)
+  completedAt DateTime?
+
+  @@id([userId, moduleId])
+}
+
+// ── Community ─────────────────────────────────────────────────
+model Circle {
+  id          String @id @default(cuid())
+  name        String
+  description String
+  topic       String
+  posts       Post[]
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  circleId  String
+  circle    Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime @default(now())
+  replies   Reply[]
+  likes     Like[]
+}
+
+model Reply {
+  id        String   @id @default(cuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime @default(now())
+}
+
+model Like {
+  id     String @id @default(cuid())
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId]) // one like per user per post
+}
+
+// ── Mentoring ─────────────────────────────────────────────────
+model Mentor {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio       String
+  expertise String[] // array of expertise tags
+  available Boolean  @default(true)
+  sessions  MentoringSession[]
+}
+
+model MentoringSession {
+  id           String    @id @default(cuid())
+  mentorId     String
+  mentor       Mentor    @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+  menteeId     String
+  mentee       User      @relation("Mentee", fields: [menteeId], references: [id], onDelete: Cascade)
+  status       String    @default("pending") // pending | confirmed | completed
+  requestedAt  DateTime  @default(now())
+  scheduledAt  DateTime?
+  notes        String?
+}
+
+// ── Opportunities ─────────────────────────────────────────────
+model JobListing {
+  id          String   @id @default(cuid())
+  title       String
+  company     String
+  location    String
+  type        String   // full-time | part-time | remote
+  description String
+  applyUrl    String
+  isPartner   Boolean  @default(false)
+  skillArea   String?  // for filtering
+  createdAt   DateTime @default(now())
+}
+
+model CorporateEmployer {
+  id          String  @id @default(cuid())
+  name        String
+  industry    String
+  description String
+  website     String?
+  logoUrl     String?
+  isPartner   Boolean @default(false)
+}

@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Environment secrets — NEVER commit these
+.env
+server/.env
+client/.env
+*.env.local
+
+# Build output
+client/dist/
+client/build/
+
+# Prisma generated client
+server/node_modules/.prisma/
+
+# Uploads (user files)
+server/uploads/*
+!server/uploads/.gitkeep
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/settings.json
