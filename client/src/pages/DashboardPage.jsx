@@ -29,35 +29,17 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch overall learning progress and the next incomplete module
-    Promise.all([
-      fetch('/api/learn/progress', { credentials: 'include' }).then((r) => r.json()),
-      fetch('/api/learn/paths', { credentials: 'include' }).then((r) => r.json()),
-    ])
-      .then(([prog, pathsData]) => {
-        setProgress(prog);
-
-        // Find the first incomplete module across all paths
-        if (pathsData.paths) {
-          for (const path of pathsData.paths) {
-            const incomplete = path.modules.find(
-              (m) => !m.userProgress?.[0]?.completed
-            );
-            if (incomplete) {
-              setNextModule({ ...incomplete, pathTitle: path.title });
-              break;
-            }
-          }
-        }
+    fetch('/api/dashboard/summary', { credentials: 'include' })
+      .then((r) => r.json())
+      .then((data) => {
+        setProgress(data.progress);
+        setNextModule(data.nextModule);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
 
-  const progressPercent =
-    progress && progress.total > 0
-      ? Math.round((progress.completed / progress.total) * 100)
-      : 0;
+  const progressPercent = progress?.percent ?? 0;
 
   return (
     <div className="min-h-screen bg-cream">
@@ -80,9 +62,14 @@ export default function DashboardPage() {
           <div className="flex flex-col gap-6">
             {/* ── Progress card ─────────────────────────── */}
             <div className="card">
-              <h2 className="font-heading text-lg font-semibold text-warm-brown mb-4">
+              <h2 className="font-heading text-lg font-semibold text-warm-brown mb-1">
                 Your learning progress
               </h2>
+              {progress?.pathTitle && (
+                <p className="text-sm font-medium mb-4" style={{ color: '#C4714A' }}>
+                  {progress.pathTitle}
+                </p>
+              )}
               <ProgressBar
                 percent={progressPercent}
                 label={`${progress?.completed || 0} of ${progress?.total || 0} modules complete`}
@@ -129,7 +116,8 @@ export default function DashboardPage() {
                   <h3 className="font-heading text-base font-semibold text-warm-brown group-hover:text-terracotta transition-colors">
                     {label}
                   </h3>
-                  <p className="text-sm text-muted-text">{desc}</p>
+                  <p className="text-sm text-muted-text flex-1">{desc}</p>
+                  <span className="text-terracotta text-sm font-medium mt-1 group-hover:translate-x-1 transition-transform inline-block">→</span>
                 </Link>
               ))}
             </div>

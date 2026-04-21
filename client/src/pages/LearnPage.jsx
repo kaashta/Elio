@@ -246,8 +246,28 @@ export default function LearnPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         <div className="flex flex-col lg:flex-row gap-6">
 
-          {/* ── Sidebar — learning paths ─────────────────── */}
-          <aside className="w-full lg:w-64 flex-shrink-0">
+          {/* ── Mobile path selector ─────────────────────── */}
+          <div className="lg:hidden">
+            <label className="label" htmlFor="path-select">Learning path</label>
+            <select
+              id="path-select"
+              className="input"
+              value={selectedPath?.id || ''}
+              onChange={(e) => {
+                const p = paths.find((path) => path.id === e.target.value);
+                if (p) { setSelectedPath(p); navigate('/learn'); }
+              }}
+            >
+              {paths.map((path) => (
+                <option key={path.id} value={path.id}>
+                  {path.title} — {pathProgress(path)}% complete
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* ── Desktop sidebar — learning paths ─────────── */}
+          <aside className="hidden lg:block w-64 flex-shrink-0">
             <h2 className="font-heading text-lg font-semibold text-warm-brown mb-4">
               Learning Paths
             </h2>

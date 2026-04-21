@@ -54,6 +54,7 @@ if (process.env.DEMO_MODE === 'true') {
   const { default: communityRoutes }     = await import('./routes/community.js');
   const { default: opportunitiesRoutes } = await import('./routes/opportunities.js');
   const { default: mentorRoutes }        = await import('./routes/mentors.js');
+  const { default: dashboardRoutes }     = await import('./routes/dashboard.js');
 
   app.use('/api/auth', authRoutes);
   app.use('/api/users', userRoutes);
@@ -61,6 +62,7 @@ if (process.env.DEMO_MODE === 'true') {
   app.use('/api/community', communityRoutes);
   app.use('/api/opportunities', opportunitiesRoutes);
   app.use('/api/mentors', mentorRoutes);
+  app.use('/api/dashboard', dashboardRoutes);
 
   if (process.env.NODE_ENV === 'development') {
     const { default: seedRoutes } = await import('./routes/seed.js');

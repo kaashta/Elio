@@ -73,6 +73,26 @@ router.post('/users/me/onboard', (req, res) => {
   res.json({ user: { ...DEMO_USER, onboarded: true } });
 });
 
+// ── Dashboard ────────────────────────────────────────────────────────────────
+
+// GET /api/dashboard/summary
+router.get('/dashboard/summary', (_req, res) => {
+  const totalModules = paths.reduce((acc, p) => acc + p.modules.length, 0);
+  const firstPath = paths[0];
+  const nextModule = firstPath?.modules?.[0]
+    ? { ...firstPath.modules[0], pathTitle: firstPath.title }
+    : null;
+  res.json({
+    progress: {
+      total: totalModules,
+      completed: 0,
+      percent: 0,
+      pathTitle: firstPath?.title ?? null,
+    },
+    nextModule,
+  });
+});
+
 // ── Learning ──────────────────────────────────────────────────────────────────
 
 // GET /api/learn/paths
