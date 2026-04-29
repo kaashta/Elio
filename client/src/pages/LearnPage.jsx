@@ -15,9 +15,15 @@ function ModuleViewer({ module, onComplete, onBack }) {
   const [score, setScore] = useState(0);
   const [completing, setCompleting] = useState(false);
   const [error, setError] = useState('');
+  const [activeChapterIdx, setActiveChapterIdx] = useState(0);
 
   const quiz = module.quiz || [];
+  const chapters = module.chapters || [];
+  const hasChapters = chapters.length > 0;
   const isCompleted = module.userProgress?.[0]?.completed;
+
+  // Reset chapter index when module changes
+  const activeChapter = hasChapters ? chapters[activeChapterIdx] : null;
 
   const handleQuizAnswer = (qIdx, optIdx) => {
     if (quizSubmitted) return;
@@ -78,13 +84,75 @@ function ModuleViewer({ module, onComplete, onBack }) {
         </div>
       )}
 
-      {/* Content */}
-      <div
-        className="prose prose-warm max-w-none bg-off-white rounded-card p-6 shadow-card
-                   [&>h2]:font-heading [&>h2]:text-warm-brown [&>h3]:text-warm-brown
-                   [&>p]:text-warm-brown/90 [&>p]:leading-relaxed"
-        dangerouslySetInnerHTML={{ __html: module.content }}
-      />
+      {/* Chapter navigation + content */}
+      {hasChapters ? (
+        <div className="flex flex-col lg:flex-row gap-4">
+          {/* Chapter list sidebar */}
+          <nav className="lg:w-56 flex-shrink-0">
+            <p className="text-xs uppercase tracking-widest text-muted-text font-semibold mb-2 px-1">
+              Chapters
+            </p>
+            <div className="flex flex-col gap-1">
+              {chapters.map((ch, idx) => (
+                <button
+                  key={ch.id}
+                  onClick={() => setActiveChapterIdx(idx)}
+                  className={`text-left px-3 py-2 rounded-btn text-sm transition-all duration-150
+                    ${activeChapterIdx === idx
+                      ? 'bg-terracotta/10 text-terracotta font-semibold border-l-2 border-terracotta'
+                      : 'text-muted-text hover:text-warm-brown hover:bg-sand/50'
+                    }`}
+                >
+                  <span className="text-xs mr-1 opacity-60">{idx + 1}.</span> {ch.title}
+                </button>
+              ))}
+            </div>
+          </nav>
+
+          {/* Chapter content */}
+          <div className="flex-1 min-w-0">
+            <div
+              className="prose prose-warm max-w-none bg-off-white rounded-card p-6 shadow-card mb-4
+                         [&>h2]:font-heading [&>h2]:text-warm-brown [&>h3]:text-warm-brown
+                         [&>p]:text-warm-brown/90 [&>p]:leading-relaxed [&>ul]:text-warm-brown/90
+                         [&>ol]:text-warm-brown/90 [&>li]:leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: activeChapter.content }}
+            />
+
+            {/* Prev / Next */}
+            <div className="flex items-center justify-between">
+              <button
+                onClick={() => setActiveChapterIdx((i) => Math.max(0, i - 1))}
+                disabled={activeChapterIdx === 0}
+                className="btn-ghost text-sm disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                ← Previous
+              </button>
+              <span className="text-xs text-muted-text">
+                {activeChapterIdx + 1} / {chapters.length}
+              </span>
+              {activeChapterIdx < chapters.length - 1 ? (
+                <button
+                  onClick={() => setActiveChapterIdx((i) => i + 1)}
+                  className="btn-secondary text-sm"
+                >
+                  Next →
+                </button>
+              ) : (
+                <span className="text-xs text-sage font-medium">All chapters done ✓</span>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : (
+        /* Fallback: plain content if no chapters */
+        <div
+          className="prose prose-warm max-w-none bg-off-white rounded-card p-6 shadow-card
+                     [&>h2]:font-heading [&>h2]:text-warm-brown [&>h3]:text-warm-brown
+                     [&>p]:text-warm-brown/90 [&>p]:leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: module.content }}
+        />
+      )}
 
       {/* Quiz */}
       {quiz.length > 0 && (

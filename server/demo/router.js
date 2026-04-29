@@ -12,6 +12,7 @@ import {
   mentors,
   jobs,
   employers,
+  events,
 } from './data.js';
 
 const router = Router();
@@ -217,6 +218,18 @@ router.get('/opportunities/jobs', (req, res) => {
 // GET /api/opportunities/employers
 router.get('/opportunities/employers', (req, res) => {
   res.json({ employers });
+});
+
+// ── Events ────────────────────────────────────────────────────────────────────
+
+// GET /api/community/events
+router.get('/community/events', (req, res) => {
+  res.json({ events });
+});
+
+// POST /api/community/events/:id/register
+router.post('/community/events/:id/register', (req, res) => {
+  res.status(201).json({ registered: true, eventId: req.params.id });
 });
 
 export default router;

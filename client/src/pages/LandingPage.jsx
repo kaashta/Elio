@@ -29,36 +29,36 @@ const footerLinks = [
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#FAF6F0' }}>
+    <div className="min-h-screen flex flex-col" style={{ background: '#FAF7FF' }}>
 
       {/* ── Hero — full viewport ──────────────────────── */}
       <section
         className="relative flex flex-col items-center justify-center text-center px-6 overflow-hidden"
         style={{ minHeight: '100svh' }}
       >
-        {/* Warm radial glow — top right */}
+        {/* Lilac radial glow — top right */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full"
           style={{
             background:
-              'radial-gradient(circle at 60% 40%, rgba(196,113,74,0.18) 0%, transparent 70%)',
+              'radial-gradient(circle at 60% 40%, rgba(139,92,246,0.15) 0%, transparent 70%)',
           }}
         />
-        {/* Soft glow — bottom left */}
+        {/* Green glow — bottom left */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -bottom-32 -left-32 w-[440px] h-[440px] rounded-full"
           style={{
             background:
-              'radial-gradient(circle at 40% 60%, rgba(232,220,200,0.55) 0%, transparent 70%)',
+              'radial-gradient(circle at 40% 60%, rgba(5,150,105,0.12) 0%, transparent 70%)',
           }}
         />
 
         {/* Logo */}
         <p
           className="font-heading font-bold mb-12 tracking-wide"
-          style={{ fontSize: '1.6rem', color: '#C4714A' }}
+          style={{ fontSize: '1.6rem', color: '#8B5CF6' }}
         >
           elio
         </p>
@@ -68,12 +68,12 @@ export default function LandingPage() {
           className="font-heading font-bold leading-tight mb-6"
           style={{
             fontSize: 'clamp(2.4rem, 6vw, 4rem)',
-            color: '#5C3D2E',
+            color: '#2E1065',
             maxWidth: '760px',
           }}
         >
           Your next chapter{' '}
-          <span style={{ color: '#C4714A' }}>starts here.</span>
+          <span style={{ color: '#8B5CF6' }}>starts here.</span>
         </h1>
 
         {/* Subheadline */}
@@ -81,7 +81,7 @@ export default function LandingPage() {
           className="leading-relaxed mb-10"
           style={{
             fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
-            color: '#7A6A5A',
+            color: '#7C6A99',
             maxWidth: '560px',
           }}
         >
@@ -111,7 +111,7 @@ export default function LandingPage() {
         <div
           aria-hidden="true"
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 opacity-40"
-          style={{ color: '#7A6A5A' }}
+          style={{ color: '#7C6A99' }}
         >
           <span style={{ fontSize: '0.72rem', letterSpacing: '0.08em' }}>
             SCROLL
@@ -129,11 +129,11 @@ export default function LandingPage() {
       </section>
 
       {/* ── Feature tiles ─────────────────────────────── */}
-      <section className="w-full px-6 py-20" style={{ background: '#FAF6F0' }}>
+      <section className="w-full px-6 py-20" style={{ background: '#FAF7FF' }}>
         <div className="max-w-5xl mx-auto">
           <h2
             className="font-heading font-semibold text-center mb-12"
-            style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', color: '#5C3D2E' }}
+            style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', color: '#2E1065' }}
           >
             Everything you need, in one place
           </h2>
@@ -144,20 +144,20 @@ export default function LandingPage() {
                 key={title}
                 className="flex flex-col items-center text-center gap-4 rounded-card transition-shadow duration-300 hover:shadow-card-hover"
                 style={{
-                  background: '#FFFDF9',
-                  border: '1px solid #E8DCC8',
+                  background: '#FDFBFF',
+                  border: '1px solid #EDE5F5',
                   padding: '2.5rem 2rem',
-                  boxShadow: '0 4px 20px rgba(92,61,46,0.07)',
+                  boxShadow: '0 4px 20px rgba(46,16,101,0.07)',
                 }}
               >
                 <span style={{ fontSize: '2.4rem', lineHeight: 1 }}>{emoji}</span>
                 <h3
                   className="font-heading font-semibold"
-                  style={{ fontSize: '1.2rem', color: '#5C3D2E' }}
+                  style={{ fontSize: '1.2rem', color: '#2E1065' }}
                 >
                   {title}
                 </h3>
-                <p style={{ color: '#7A6A5A', lineHeight: 1.65, fontSize: '0.97rem' }}>
+                <p style={{ color: '#7C6A99', lineHeight: 1.65, fontSize: '0.97rem' }}>
                   {description}
                 </p>
               </div>
@@ -167,30 +167,30 @@ export default function LandingPage() {
       </section>
 
       {/* ── Testimonial strip ─────────────────────────── */}
-      <section className="w-full py-16 px-6" style={{ background: '#E8DCC8' }}>
+      <section className="w-full py-16 px-6" style={{ background: '#EDE5F5' }}>
         <div className="max-w-2xl mx-auto text-center">
           <p
             className="font-heading italic leading-relaxed mb-5"
-            style={{ fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)', color: '#5C3D2E' }}
+            style={{ fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)', color: '#2E1065' }}
           >
             "I didn't know where to start. Elio gave me a safe place to figure it
             out — and a community who cheered me on every step of the way."
           </p>
-          <p style={{ color: '#7A6A5A', fontWeight: 500, fontSize: '0.9rem' }}>
+          <p style={{ color: '#7C6A99', fontWeight: 500, fontSize: '0.9rem' }}>
             — Cora T., Elio member
           </p>
         </div>
       </section>
 
       {/* ── Final CTA ─────────────────────────────────── */}
-      <section className="w-full px-6 py-24 text-center" style={{ background: '#FAF6F0' }}>
+      <section className="w-full px-6 py-24 text-center" style={{ background: '#FAF7FF' }}>
         <h2
           className="font-heading font-semibold mb-4"
-          style={{ fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', color: '#5C3D2E' }}
+          style={{ fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', color: '#2E1065' }}
         >
           Ready to begin?
         </h2>
-        <p className="mb-8" style={{ color: '#7A6A5A', fontSize: '1.05rem' }}>
+        <p className="mb-8" style={{ color: '#7C6A99', fontSize: '1.05rem' }}>
           It&rsquo;s free, it&rsquo;s warm, and you deserve it.
         </p>
         <Link
@@ -205,12 +205,12 @@ export default function LandingPage() {
       {/* ── Footer ────────────────────────────────────── */}
       <footer
         className="mt-auto py-10 px-6"
-        style={{ background: '#5C3D2E' }}
+        style={{ background: '#2E1065' }}
       >
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-5">
           <span
             className="font-heading font-bold"
-            style={{ fontSize: '1.4rem', color: '#C4714A' }}
+            style={{ fontSize: '1.4rem', color: '#8B5CF6' }}
           >
             elio
           </span>
@@ -221,14 +221,14 @@ export default function LandingPage() {
                 key={label}
                 href="#"
                 style={{
-                  color: 'rgba(232,220,200,0.65)',
+                  color: 'rgba(237,229,245,0.65)',
                   fontSize: '0.875rem',
                   textDecoration: 'none',
                   transition: 'color 0.15s',
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = '#E8DCC8')}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#EDE5F5')}
                 onMouseLeave={(e) =>
-                  (e.currentTarget.style.color = 'rgba(232,220,200,0.65)')
+                  (e.currentTarget.style.color = 'rgba(237,229,245,0.65)')
                 }
               >
                 {label}
@@ -236,7 +236,7 @@ export default function LandingPage() {
             ))}
           </nav>
 
-          <p style={{ color: 'rgba(232,220,200,0.4)', fontSize: '0.8rem' }}>
+          <p style={{ color: 'rgba(237,229,245,0.4)', fontSize: '0.8rem' }}>
             © 2026 Elio
           </p>
         </div>

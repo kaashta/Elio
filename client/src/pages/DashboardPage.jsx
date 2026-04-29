@@ -66,7 +66,7 @@ export default function DashboardPage() {
                 Your learning progress
               </h2>
               {progress?.pathTitle && (
-                <p className="text-sm font-medium mb-4" style={{ color: '#C4714A' }}>
+                <p className="text-sm font-medium mb-4" style={{ color: '#8B5CF6' }}>
                   {progress.pathTitle}
                 </p>
               )}

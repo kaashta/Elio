@@ -306,10 +306,15 @@ export default function CommunityPage() {
   const [circles, setCircles] = useState([]);
   const [mentors, setMentors] = useState([]);
   const [mySessions, setMySessions] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [registeredEvents, setRegisteredEvents] = useState(new Set());
   const [selectedCircle, setSelectedCircle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [requestModal, setRequestModal] = useState(null);
   const [requestNote, setRequestNote] = useState('');
+  const [requestTask, setRequestTask] = useState('');
+  const [requestDate, setRequestDate] = useState('');
+  const [requestTime, setRequestTime] = useState('');
   const [requestSent, setRequestSent] = useState(false);
 
   useEffect(() => {
@@ -317,11 +322,13 @@ export default function CommunityPage() {
       fetch('/api/community/circles', { credentials: 'include' }).then((r) => r.json()),
       fetch('/api/mentors', { credentials: 'include' }).then((r) => r.json()),
       fetch('/api/mentors/my-sessions', { credentials: 'include' }).then((r) => r.json()),
+      fetch('/api/community/events', { credentials: 'include' }).then((r) => r.json()),
     ])
-      .then(([circleData, mentorData, sessionData]) => {
+      .then(([circleData, mentorData, sessionData, eventData]) => {
         setCircles(circleData.circles || []);
         setMentors(mentorData.mentors || []);
         setMySessions(sessionData.sessions || []);
+        setEvents(eventData.events || []);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -334,12 +341,26 @@ export default function CommunityPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ notes: requestNote }),
+        body: JSON.stringify({ notes: requestNote, task: requestTask, date: requestDate, time: requestTime }),
       });
       if (res.ok) {
         const data = await res.json();
         setMySessions((prev) => [...prev, data.session]);
         setRequestSent(true);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleRegisterEvent = async (eventId) => {
+    try {
+      const res = await fetch(`/api/community/events/${eventId}/register`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (res.ok) {
+        setRegisteredEvents((prev) => new Set([...prev, eventId]));
       }
     } catch (err) {
       console.error(err);
@@ -367,6 +388,12 @@ export default function CommunityPage() {
           >
             Mentoring
           </button>
+          <button
+            className={`tab ${activeTab === 'events' ? 'tab-active' : ''}`}
+            onClick={() => setActiveTab('events')}
+          >
+            Events
+          </button>
         </div>
 
         {loading ? (
@@ -381,6 +408,81 @@ export default function CommunityPage() {
           ) : (
             <CircleList circles={circles} onSelect={setSelectedCircle} />
           )
+        ) : activeTab === 'events' ? (
+          /* ── Events tab ─────────────────────────────────── */
+          <div>
+            <p className="text-muted-text mb-6">
+              Workshops, masterclasses, and networking events to support your journey back into work.
+            </p>
+            {events.length === 0 ? (
+              <p className="text-muted-text text-center py-8">No upcoming events at the moment — check back soon!</p>
+            ) : (
+              <div className="flex flex-col gap-4">
+                {events.map((event) => {
+                  const isRegistered = registeredEvents.has(event.id);
+                  const spotsLeft = event.capacity - event.registered;
+                  const typeLabels = {
+                    'workshop': 'Workshop',
+                    'masterclass': 'Masterclass',
+                    'in-person': 'In Person',
+                    'q-and-a': 'Q&A',
+                  };
+                  const typeColors = {
+                    'workshop': 'bg-terracotta/10 text-terracotta',
+                    'masterclass': 'bg-sage/20 text-sage',
+                    'in-person': 'bg-sand text-muted-text',
+                    'q-and-a': 'bg-terracotta/5 text-terracotta',
+                  };
+                  return (
+                    <div key={event.id} className="card hover:shadow-card-hover transition-shadow duration-200">
+                      <div className="flex items-start justify-between gap-4 mb-2 flex-wrap">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 flex-wrap mb-1">
+                            <h3 className="font-heading text-lg font-semibold text-warm-brown">{event.title}</h3>
+                            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${typeColors[event.type] || 'bg-sand text-muted-text'}`}>
+                              {typeLabels[event.type] || event.type}
+                            </span>
+                          </div>
+                          <p className="text-sm text-muted-text">
+                            📅 {new Date(event.date).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} at {event.time}
+                          </p>
+                          <p className="text-sm text-muted-text">📍 {event.location}</p>
+                          <p className="text-sm text-muted-text mb-2">Hosted by {event.host}</p>
+                        </div>
+                        <div className="text-right flex-shrink-0">
+                          <p className="text-sm font-medium text-warm-brown">{spotsLeft} spot{spotsLeft !== 1 ? 's' : ''} left</p>
+                          <p className="text-xs text-muted-text">{event.registered}/{event.capacity} registered</p>
+                        </div>
+                      </div>
+                      <p className="text-sm text-warm-brown/80 leading-relaxed mb-4">{event.description}</p>
+                      <div className="flex items-center justify-between flex-wrap gap-3">
+                        <div className="flex-1 h-1.5 bg-sand rounded-full overflow-hidden max-w-32">
+                          <div
+                            className="h-full bg-terracotta/50 rounded-full"
+                            style={{ width: `${(event.registered / event.capacity) * 100}%` }}
+                          />
+                        </div>
+                        {isRegistered ? (
+                          <div className="flex items-center gap-2 text-sage font-medium text-sm">
+                            <span>✅</span> You're registered!
+                          </div>
+                        ) : spotsLeft === 0 ? (
+                          <button className="btn-ghost text-sm" disabled>Fully booked</button>
+                        ) : (
+                          <button
+                            className="btn-primary text-sm"
+                            onClick={() => handleRegisterEvent(event.id)}
+                          >
+                            Register now
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         ) : (
           /* ── Mentoring tab ─────────────────────────────── */
           <div className="flex flex-col gap-8">
@@ -397,7 +499,7 @@ export default function CommunityPage() {
                     <MentorCard
                       key={mentor.id}
                       mentor={mentor}
-                      onRequest={(m) => { setRequestModal(m); setRequestSent(false); setRequestNote(''); }}
+                      onRequest={(m) => { setRequestModal(m); setRequestSent(false); setRequestNote(''); setRequestTask(''); setRequestDate(''); setRequestTime(''); }}
                     />
                   ))}
                 </div>
@@ -468,19 +570,85 @@ export default function CommunityPage() {
                 <h3 className="font-heading text-xl font-semibold text-warm-brown mb-2">
                   Request a session with {requestModal.user?.name}
                 </h3>
-                <p className="text-muted-text text-sm mb-4">
-                  Let them know what you'd like to talk about (optional).
-                </p>
-                <textarea
-                  className="input resize-none mb-4"
-                  rows={3}
-                  placeholder="e.g. I'd love help with my CV and preparing for interviews…"
-                  value={requestNote}
-                  onChange={(e) => setRequestNote(e.target.value)}
-                />
+
+                {/* Task type */}
+                <div className="mb-4">
+                  <p className="label mb-2">What would you like to focus on? *</p>
+                  <div className="flex flex-wrap gap-2">
+                    {['CV Review', 'Skills Check', 'Interview Preparation', 'Salary Negotiation', 'Networking'].map((task) => (
+                      <button
+                        key={task}
+                        type="button"
+                        onClick={() => setRequestTask(task)}
+                        className={`text-sm px-3 py-1.5 rounded-full border transition-all duration-150
+                          ${requestTask === task
+                            ? 'bg-terracotta text-white border-terracotta font-medium'
+                            : 'border-sand text-muted-text hover:border-terracotta/50 hover:text-warm-brown'
+                          }`}
+                      >
+                        {task}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Preferred date */}
+                <div className="mb-4">
+                  <label className="label" htmlFor="session-date">Preferred date</label>
+                  <input
+                    id="session-date"
+                    type="date"
+                    className="input"
+                    min={new Date().toISOString().split('T')[0]}
+                    value={requestDate}
+                    onChange={(e) => setRequestDate(e.target.value)}
+                  />
+                </div>
+
+                {/* Preferred time */}
+                <div className="mb-4">
+                  <p className="label mb-2">Preferred time</p>
+                  <div className="flex gap-2 flex-wrap">
+                    {[
+                      { label: 'Morning (9–12)', value: 'morning' },
+                      { label: 'Afternoon (12–5)', value: 'afternoon' },
+                      { label: 'Evening (5–8)', value: 'evening' },
+                    ].map((slot) => (
+                      <button
+                        key={slot.value}
+                        type="button"
+                        onClick={() => setRequestTime(slot.value)}
+                        className={`text-sm px-3 py-1.5 rounded-full border transition-all duration-150
+                          ${requestTime === slot.value
+                            ? 'bg-terracotta text-white border-terracotta font-medium'
+                            : 'border-sand text-muted-text hover:border-terracotta/50 hover:text-warm-brown'
+                          }`}
+                      >
+                        {slot.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Additional notes */}
+                <div className="mb-4">
+                  <label className="label">Additional notes (optional)</label>
+                  <textarea
+                    className="input resize-none"
+                    rows={2}
+                    placeholder="Anything else you'd like them to know…"
+                    value={requestNote}
+                    onChange={(e) => setRequestNote(e.target.value)}
+                  />
+                </div>
+
                 <div className="flex justify-end gap-3">
                   <button className="btn-ghost" onClick={() => setRequestModal(null)}>Cancel</button>
-                  <button className="btn-primary" onClick={handleRequestSession}>
+                  <button
+                    className="btn-primary"
+                    onClick={handleRequestSession}
+                    disabled={!requestTask}
+                  >
                     Send request
                   </button>
                 </div>

@@ -7,8 +7,120 @@ import LoadingSpinner from '../components/LoadingSpinner';
 const JOB_TYPES = ['all', 'full-time', 'part-time', 'remote'];
 const SKILL_AREAS = ['all', 'Business basics', 'Digital skills', 'Finance', 'Communication', 'Leadership', 'Customer service'];
 
+// ── Job application modal ─────────────────────────────────────────────────────
+function JobApplicationModal({ job, onClose }) {
+  const [form, setForm] = useState({ name: '', email: '', phone: '', coverLetter: '' });
+  const [cvFile, setCvFile] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
+
+  const update = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }));
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
+  return (
+    <div
+      className="fixed inset-0 bg-warm-brown/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      <div
+        className="card w-full max-w-lg max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {submitted ? (
+          <div className="text-center py-8">
+            <p className="text-4xl mb-4">🎉</p>
+            <h3 className="font-heading text-xl font-semibold text-warm-brown mb-2">
+              Application sent!
+            </h3>
+            <p className="text-muted-text mb-2">
+              You've applied for <strong>{job.title}</strong> at {job.company}.
+            </p>
+            <p className="text-muted-text text-sm mb-6">
+              They'll be in touch if you're shortlisted. In the meantime, keep going — you've got this.
+            </p>
+            <button onClick={onClose} className="btn-primary">Done</button>
+          </div>
+        ) : (
+          <>
+            <div className="mb-4">
+              <h3 className="font-heading text-xl font-semibold text-warm-brown mb-1">
+                Apply for: {job.title}
+              </h3>
+              <p className="text-sm text-terracotta font-medium">{job.company} — {job.location}</p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <div>
+                <label className="label">Full name *</label>
+                <input
+                  required
+                  className="input"
+                  placeholder="Your full name"
+                  value={form.name}
+                  onChange={update('name')}
+                />
+              </div>
+              <div>
+                <label className="label">Email address *</label>
+                <input
+                  required
+                  type="email"
+                  className="input"
+                  placeholder="you@example.com"
+                  value={form.email}
+                  onChange={update('email')}
+                />
+              </div>
+              <div>
+                <label className="label">Phone number</label>
+                <input
+                  type="tel"
+                  className="input"
+                  placeholder="07700 900000"
+                  value={form.phone}
+                  onChange={update('phone')}
+                />
+              </div>
+              <div>
+                <label className="label">Cover letter</label>
+                <textarea
+                  className="input resize-none"
+                  rows={4}
+                  placeholder="Tell them a bit about yourself and why you're interested in this role…"
+                  value={form.coverLetter}
+                  onChange={update('coverLetter')}
+                />
+              </div>
+              <div>
+                <label className="label">Upload your CV (optional)</label>
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  className="text-sm text-muted-text file:mr-3 file:btn-secondary file:border-0 file:text-sm file:py-1 file:px-3 file:rounded-btn file:cursor-pointer"
+                  onChange={(e) => setCvFile(e.target.files[0] || null)}
+                />
+                {cvFile && (
+                  <p className="text-xs text-sage mt-1">✓ {cvFile.name}</p>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-3 pt-2">
+                <button type="button" className="btn-ghost" onClick={onClose}>Cancel</button>
+                <button type="submit" className="btn-primary">Submit application</button>
+              </div>
+            </form>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── Job card ──────────────────────────────────────────────────────────────────
-function JobCard({ job }) {
+function JobCard({ job, onApply }) {
   const typeColors = {
     'full-time': 'bg-sage/20 text-sage',
     'part-time': 'bg-terracotta/10 text-terracotta',
@@ -37,15 +149,12 @@ function JobCard({ job }) {
       <p className="text-sm text-muted-text mb-1">📍 {job.location}</p>
       <p className="text-sm text-warm-brown/80 leading-relaxed mb-4">{job.description}</p>
 
-      <a
-        href={job.applyUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="btn-primary inline-block text-sm"
-        onClick={(e) => job.applyUrl === '#' && e.preventDefault()}
+      <button
+        onClick={() => onApply(job)}
+        className="btn-primary text-sm"
       >
         Apply now
-      </a>
+      </button>
     </div>
   );
 }
@@ -85,6 +194,7 @@ export default function OpportunitiesPage() {
   const [jobs, setJobs] = useState([]);
   const [employers, setEmployers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [applyingJob, setApplyingJob] = useState(null);
 
   // Filter state
   const [typeFilter, setTypeFilter] = useState('all');
@@ -197,7 +307,7 @@ export default function OpportunitiesPage() {
                   <p className="text-muted-text">No jobs match your filters. Try broadening your search.</p>
                 </div>
               ) : (
-                filteredJobs.map((job) => <JobCard key={job.id} job={job} />)
+                filteredJobs.map((job) => <JobCard key={job.id} job={job} onApply={setApplyingJob} />)
               )}
             </div>
           </div>
@@ -215,6 +325,10 @@ export default function OpportunitiesPage() {
           </div>
         )}
       </main>
+
+      {applyingJob && (
+        <JobApplicationModal job={applyingJob} onClose={() => setApplyingJob(null)} />
+      )}
     </div>
   );
 }

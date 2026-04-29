@@ -7,14 +7,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        cream: '#FAF6F0',
-        sand: '#E8DCC8',
-        terracotta: '#C4714A',
-        rust: '#A0522D',
-        sage: '#7A9E7E',
-        'warm-brown': '#5C3D2E',
-        'off-white': '#FFFDF9',
-        'muted-text': '#7A6A5A',
+        cream: '#FAF7FF',
+        sand: '#EDE5F5',
+        terracotta: '#8B5CF6',
+        rust: '#6D28D9',
+        sage: '#059669',
+        'warm-brown': '#2E1065',
+        'off-white': '#FDFBFF',
+        'muted-text': '#7C6A99',
       },
       fontFamily: {
         heading: ['"Playfair Display"', 'serif'],
@@ -25,8 +25,8 @@ export default {
         btn: '8px',
       },
       boxShadow: {
-        card: '0 4px 20px rgba(92, 61, 46, 0.08)',
-        'card-hover': '0 8px 32px rgba(92, 61, 46, 0.14)',
+        card: '0 4px 20px rgba(46, 16, 101, 0.08)',
+        'card-hover': '0 8px 32px rgba(46, 16, 101, 0.14)',
       },
     },
   },
